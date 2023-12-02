@@ -1,0 +1,30 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile_backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+    networks:
+      - ecamazon_network
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3306:3306"
+    volumes:
+    - ./DB/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ecamazon_network
+
+networks:
+  ecamazon_network:
+    driver: bridge
