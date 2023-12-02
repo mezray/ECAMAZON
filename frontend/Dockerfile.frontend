@@ -1,0 +1,17 @@
+# Utilisez l'image Node.js officielle
+FROM node:14
+
+# Définissez le répertoire de travail
+WORKDIR /app
+
+# Copiez le contenu du répertoire frontend dans le conteneur
+COPY . .
+
+# Installez les dépendances
+RUN npm install
+
+# Exposez le port sur lequel l'application React s'exécute
+EXPOSE 3000
+
+# Commande pour exécuter l'application React
+CMD ["npm", "start"]
