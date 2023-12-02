@@ -1,5 +1,7 @@
 docker-compose up
 
+docker-compose exec mysql mysqladmin -u root -p status
+
 
 docker rm -f $(docker ps -a -q) 
 docker rmi -f $(docker images -q)
