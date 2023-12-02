@@ -43,7 +43,7 @@ cursor = db.cursor()
 def index():
     cursor.execute("SELECT * FROM mytable")
     result = cursor.fetchall()
-    return render_template('index.html', data=result)
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
