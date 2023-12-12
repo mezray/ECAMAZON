@@ -1,14 +1,27 @@
 -- init.sql
 
 -- Créez la table mytable
-CREATE TABLE mytable (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    age INT
+CREATE TABLE camions (
+  camion_id INT NOT NULL AUTO_INCREMENT,
+  camion_pos_x FLOAT NOT NULL,
+  camion_pos_y FLOAT NOT NULL,
+  PRIMARY KEY (camion_id)
 );
 
--- Ajoutez des données à la table mytable
-INSERT INTO mytable (name, age) VALUES
-    ('John Doe', 30),
-    ('Jane Doe', 25),
-    ('Bob Smith', 40);
+CREATE TABLE livraisons (
+  livraison_id INT NOT NULL AUTO_INCREMENT,
+  camion_id INT NOT NULL,
+  etat_livraison INT NOT NULL,
+  PRIMARY KEY (livraison_id),
+  FOREIGN KEY (camion_id) REFERENCES camions (camion_id)
+);
+
+CREATE TABLE colis (
+  colis_id INT NOT NULL AUTO_INCREMENT,
+  livraison_id INT NOT NULL,
+  adresse_x FLOAT NOT NULL,
+  adresse_y FLOAT NOT NULL,
+  etat_colis TINYINT NOT NULL,
+  PRIMARY KEY (colis_id),
+  FOREIGN KEY (livraison_id) REFERENCES livraisons (livraison_id)
+);
