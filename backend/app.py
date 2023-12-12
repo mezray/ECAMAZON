@@ -3,6 +3,7 @@ from flask_cors import CORS
 import mysql.connector
 import os
 import time
+import requests
 
 app = Flask(__name__, template_folder='frontend/templates')
 CORS(app)
@@ -77,6 +78,15 @@ def post_route2():
         update_query = "UPDATE colis SET etat_colis = %s WHERE colis_id = %s"
         cursor.execute(update_query, (new_etat_colis, colis_id))
         db.commit()
+
+        # Envoi de la requête POST à un autre microservice
+        url = "http://url_du_microservice"  # Remplacez par l'URL de votre microservice
+        headers = {'Content-Type': 'application/json'}  # ou tout autre en-tête nécessaire
+        response = requests.post(url, headers=headers, json=data)
+
+        # Vérifiez la réponse
+        if response.status_code != 200:
+            return jsonify({'message': 'Erreur lors de l\'envoi de la requête POST au microservice'}), 500
 
     return jsonify(data), 201
 
