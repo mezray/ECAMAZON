@@ -48,34 +48,46 @@ def add_colis():
     adresse_y = data['adresse_y']
     cursor = db.cursor()
 
-    print("About to execute query")
+    # Chercher le numéro de livraison le plus élevé
     cursor.execute("SELECT MAX(livraison_id) FROM livraisons")
-    print("Executed query, about to fetch one")
-    result = cursor.fetchone()
-    print("Fetched one, result is:", result)
-    if result is None or result[0] is None:
-        print("No rows found")
-        cursor.execute("INSERT INTO livraisons (camion_id, etat_livraison) VALUES (%s, %s)", (1, 0))
+    livraison_id = cursor.fetchone()[0]
+
+    # Si la table livraisons est vide, initialiser une nouvelle livraison
+    if livraison_id is None:
+        cursor.execute("SELECT camion_id FROM camions ORDER BY camion_id ASC LIMIT 1")
+        camion_id = cursor.fetchone()[0]
+        cursor.execute("INSERT INTO livraisons (camion_id, etat_livraison) VALUES (%s, %s)", (camion_id, 0))
         db.commit()
         livraison_id = cursor.lastrowid
     else:
-        livraison_id = result[0]
-        print("livraison_id is:", livraison_id)
+        # Vérifier qu'au maximum 30 colis sont attachés à cette livraison
+        cursor.execute("SELECT COUNT(*) FROM colis WHERE livraison_id = %s", (livraison_id,))
+        count = cursor.fetchone()[0]
+        if count >= 30:
+            # Chercher le camion qui a le moins de livraisons en cours
+            cursor.execute("""
+                SELECT c.camion_id 
+                FROM camions c 
+                LEFT JOIN livraisons l ON c.camion_id = l.camion_id AND l.etat_livraison = 0
+                GROUP BY c.camion_id 
+                ORDER BY COUNT(l.livraison_id) ASC 
+                LIMIT 1
+            """)
+            camion_id = cursor.fetchone()[0]
 
-    # Vérifier qu'au maximum 10 colis sont attachés à cette livraison
-    cursor.execute("SELECT COUNT(*) FROM colis WHERE livraison_id = %s", (livraison_id,))
-    count = cursor.fetchone()[0]
-    if count >= 10:
-        # Ajouter une ligne dans la table livraisons avec un id incrémenté
-        cursor.execute("INSERT INTO livraisons (camion_id, etat_livraison) VALUES (%s, %s)", (1, 0))
-        db.commit()
-        livraison_id = cursor.lastrowid
+            # Ajouter une ligne dans la table livraisons avec un id incrémenté
+            cursor.execute("INSERT INTO livraisons (camion_id, etat_livraison) VALUES (%s, %s)", (camion_id, 0))
+            db.commit()
+            livraison_id = cursor.lastrowid
 
     # Ajouter les informations dans la table colis
     cursor.execute("INSERT INTO colis (colis_id, livraison_id, adresse_x, adresse_y, etat_colis) VALUES (%s, %s, %s, %s, %s)", (id, livraison_id, adresse_x, adresse_y, 0))
     db.commit()
 
     return jsonify({"message": "Colis ajouté avec succès"}), 201
+
+
+
 
 @app.route('/postPosColisFromDevice', methods=['POST'])
 def post_route2():
