@@ -83,38 +83,38 @@ function App() {
       console.error('Erreur lors de la mise à jour de la position du camion', error);
     }
   };
-  
-  
+
+
   return (
     <div>
       <h1>Ajouter un Colis</h1>
       <form>
         <div>
-        <label>ID:</label>
-        <input type="text" name="id" onChange={handleColisChange} />
+          <label>ID:</label>
+          <input type="text" name="id" onChange={handleColisChange} />
         </div>
         <div>
-        <label>Adresse X:</label>
-        <input type="text" name="adresse_x" onChange={handleColisChange} />
+          <label>Adresse X:</label>
+          <input type="text" name="adresse_x" onChange={handleColisChange} />
         </div>
         <div>
-        <label>Adresse Y:</label>
-        <input type="text" name="adresse_y" onChange={handleColisChange} />
+          <label>Adresse Y:</label>
+          <input type="text" name="adresse_y" onChange={handleColisChange} />
         </div>
         <div>
-        <button type="button" onClick={addColis}>Ajouter Colis</button>
+          <button type="button" onClick={addColis}>Ajouter Colis</button>
         </div>
       </form>
 
       <h1>Modifier la Position du Colis</h1>
       <form>
         <div>
-        <label>Colis ID:</label>
-        <input type="text" name="colis_id" onChange={handlePosColisChange} />
+          <label>Colis ID:</label>
+          <input type="text" name="colis_id" onChange={handlePosColisChange} />
         </div>
         <div>
-        <label>Nouvel État du Colis:</label>
-        <input type="text" name="etat_colis" onChange={handlePosColisChange} />
+          <label>Nouvel État du Colis:</label>
+          <input type="text" name="etat_colis" onChange={handlePosColisChange} />
         </div>
         <button type="button" onClick={postPosColis}>Modifier Position du Colis</button>
       </form>
@@ -136,18 +136,31 @@ function App() {
         <button type="button" onClick={postPosCamion}>Modifier Position du Camion</button>
       </form>
       <h1>Données de Livraison</h1>
-    <button type="button" onClick={getLivraison}>Récupérer les données de livraison</button>
-    {livraisonData.map((livraison, index) => (
-      <div key={index}>
-        <p>Livraison ID: {livraison.livraison_id}</p>
-        <p>Colis ID: {livraison.colis_id}</p>
-        <p>Adresse X: {livraison.adresse_x}</p>
-        <p>Adresse Y: {livraison.adresse_y}</p>
-        <p>État du Colis: {livraison.etat_colis}</p>
-      </div>
-    ))}
+      <button type="button" onClick={getLivraison}>Récupérer les données de livraison</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Livraison ID</th>
+            <th>Colis ID</th>
+            <th>Adresse X</th>
+            <th>Adresse Y</th>
+            <th>État du Colis</th>
+          </tr>
+        </thead>
+        <tbody>
+          {livraisonData.map((livraison, index) => (
+            <tr key={index}>
+              <td>{livraison.livraison_id}</td>
+              <td>{livraison.colis_id}</td>
+              <td>{livraison.adresse_x}</td>
+              <td>{livraison.adresse_y}</td>
+              <td>{livraison.etat_colis}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-    
+
   );
 }
 
