@@ -6,3 +6,18 @@ docker-compose exec mysql mysqladmin -u root -p status
 docker rm -f $(docker ps -a -q) 
 docker rmi -f $(docker images -q)
 docker volume rm $(docker volume ls -q)
+docker-compose up
+
+docker-compose down --volumes
+docker-compose build
+docker-compose up
+
+
+mysql -u root -p
+password
+use mydatabase
+
+QUESTION:
+- Camions déja créé avant ou non?
+en attendant : INSERT INTO camions (camion_pos_x, camion_pos_y) VALUES (50.5, 75.2);
+

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 import mysql.connector
 import os
@@ -6,7 +6,7 @@ import time
 import requests
 
 app = Flask(__name__, template_folder='frontend/templates')
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 def is_mysql_available():
     try:
@@ -48,9 +48,19 @@ def add_colis():
     adresse_y = data['adresse_y']
     cursor = db.cursor()
 
-    # Chercher le numéro de livraison le plus élevé
+    print("About to execute query")
     cursor.execute("SELECT MAX(livraison_id) FROM livraisons")
-    livraison_id = cursor.fetchone()[0]
+    print("Executed query, about to fetch one")
+    result = cursor.fetchone()
+    print("Fetched one, result is:", result)
+    if result is None or result[0] is None:
+        print("No rows found")
+        cursor.execute("INSERT INTO livraisons (camion_id, etat_livraison) VALUES (%s, %s)", (1, 0))
+        db.commit()
+        livraison_id = cursor.lastrowid
+    else:
+        livraison_id = result[0]
+        print("livraison_id is:", livraison_id)
 
     # Vérifier qu'au maximum 10 colis sont attachés à cette livraison
     cursor.execute("SELECT COUNT(*) FROM colis WHERE livraison_id = %s", (livraison_id,))
@@ -79,16 +89,7 @@ def post_route2():
         cursor.execute(update_query, (new_etat_colis, colis_id))
         db.commit()
 
-        # Envoi de la requête POST à un autre microservice
-        url = "http://url_du_microservice"  # Remplacez par l'URL de votre microservice
-        headers = {'Content-Type': 'application/json'}  # ou tout autre en-tête nécessaire
-        response = requests.post(url, headers=headers, json=data)
-
-        # Vérifiez la réponse
-        if response.status_code != 200:
-            return jsonify({'message': 'Erreur lors de l\'envoi de la requête POST au microservice'}), 500
-
-    return jsonify(data), 201
+    return jsonify({'message': 'Mise à jour réussie'}), 200
 
 @app.route('/postPosCamionFromDevice', methods=['POST'])
 def post_route3():
@@ -113,9 +114,15 @@ def get_route():
     JOIN colis ON livraisons.livraison_id = colis.livraison_id
     WHERE livraisons.etat_livraison = 0
     """
-    cursor.execute(query)
-    result = cursor.fetchall()
-    return jsonify(result), 201 
+    try:
+        cursor = db.cursor(dictionary=True)  # Add dictionary=True
+        cursor.execute(query)
+        result = cursor.fetchall()
+        db.commit()
+        return jsonify(result), 201
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Error executing query"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
