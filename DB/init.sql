@@ -25,3 +25,5 @@ CREATE TABLE colis (
   PRIMARY KEY (colis_id),
   FOREIGN KEY (livraison_id) REFERENCES livraisons (livraison_id)
 );
+
+INSERT INTO camions (camion_pos_x, camion_pos_y) VALUES (0, 0), (0, 0), (0, 0);
