@@ -89,21 +89,33 @@ function App() {
     <div>
       <h1>Ajouter un Colis</h1>
       <form>
+        <div>
         <label>ID:</label>
         <input type="text" name="id" onChange={handleColisChange} />
+        </div>
+        <div>
         <label>Adresse X:</label>
         <input type="text" name="adresse_x" onChange={handleColisChange} />
+        </div>
+        <div>
         <label>Adresse Y:</label>
         <input type="text" name="adresse_y" onChange={handleColisChange} />
+        </div>
+        <div>
         <button type="button" onClick={addColis}>Ajouter Colis</button>
+        </div>
       </form>
 
       <h1>Modifier la Position du Colis</h1>
       <form>
+        <div>
         <label>Colis ID:</label>
         <input type="text" name="colis_id" onChange={handlePosColisChange} />
+        </div>
+        <div>
         <label>Nouvel État du Colis:</label>
         <input type="text" name="etat_colis" onChange={handlePosColisChange} />
+        </div>
         <button type="button" onClick={postPosColis}>Modifier Position du Colis</button>
       </form>
 
