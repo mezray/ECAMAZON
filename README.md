@@ -1,6 +1,4 @@
-# Mon Application Flask
-
-Cette application est une API REST construite avec Flask pour gérer les livraisons de colis.
+# ECAMAZON Dispatching
 
 ## Routes API
 
