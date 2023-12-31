@@ -34,15 +34,3 @@ Cette route permet de mettre à jour la position d'un camion.
 ### GET /getLivraison
 
 Cette route retourne les informations sur les livraisons en cours. Elle retourne l'identifiant de la livraison, l'identifiant du colis, les coordonnées de l'adresse de livraison du colis et l'état du colis.
-
-## Installation
-
-Pour installer et exécuter cette application, suivez les étapes suivantes :
-
-1. Clonez ce dépôt.
-2. Installez les dépendances avec `pip install -r requirements.txt`.
-3. Exécutez l'application avec `python app.py`.
-
-## Contribution
-
-Les contributions à ce projet sont les bienvenues. Si vous souhaitez contribuer, veuillez forker le dépôt et proposer une pull request.
